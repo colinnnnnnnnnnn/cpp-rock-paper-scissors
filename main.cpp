@@ -188,6 +188,17 @@ bool init()
     return success;
 }
 
+void close()
+{
+    SDL_DestroyRenderer(gRenderer);
+    gRenderer = NULL;
+    SDL_DestroyWindow(gWindow);
+    gWindow = NULL;
+
+    IMG_Quit();
+    SDL_Quit();
+}
+
 int main(int argc, char* args[])
 {
 
