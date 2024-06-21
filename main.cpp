@@ -81,9 +81,6 @@ bool LTexture::loadFromFile(std::string path)
     }
     else
     {
-        //Color key image
-        SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0xFF, 0xFF, 0xFF));
-
         //Create texture from surface pixels
         newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
         if (newTexture == NULL)
@@ -188,8 +185,25 @@ bool init()
     return success;
 }
 
+bool loadMedia()
+{
+    //Loading success flag
+    bool success = true;
+
+    //Load rock texture
+    if (!gRockTexture.loadFromFile("media/rock.png"))
+    {
+        printf("Failed to load rock texture image.\n");
+        success = false;
+    }
+
+    return success;
+}
+
 void close()
 {
+    gRockTexture.free();
+
     SDL_DestroyRenderer(gRenderer);
     gRenderer = NULL;
     SDL_DestroyWindow(gWindow);
@@ -208,21 +222,39 @@ int main(int argc, char* args[])
     }
     else
     {
-        //Main loop flag
-        bool quit = false;
-        //Event handler
-        SDL_Event e;
-        while (!quit)
+        //Load media
+        if (!loadMedia())
         {
-            //Handle events on queue
-            while (SDL_PollEvent(&e) != 0)
+            printf("Failed to load media.\n");
+        }
+        else
+        {
+            //Main loop flag
+            bool quit = false;
+            //Event handler
+            SDL_Event e;
+            while (!quit)
             {
-                //User requests quit
-                if (e.type == SDL_QUIT)
+                //Handle events on queue
+                while (SDL_PollEvent(&e) != 0)
                 {
-                    quit = true;
+                    //User requests quit
+                    if (e.type == SDL_QUIT)
+                    {
+                        quit = true;
+                    }
                 }
+
+                //Clear screen
+                SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+                SDL_RenderClear(gRenderer);
+
+                gRockTexture.render(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+
+                //Update screen
+                SDL_RenderPresent(gRenderer);
             }
+        
         }
     }
 
