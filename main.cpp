@@ -249,6 +249,11 @@ int main(int argc, char* args[])
                 SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
                 SDL_RenderClear(gRenderer);
 
+                //Fill background
+                SDL_Rect bgRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+                SDL_SetRenderDrawColor(gRenderer, 172, 202, 250, 0xFF);
+                SDL_RenderFillRect(gRenderer, &bgRect);
+
                 gRockTexture.render(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 
                 //Update screen
