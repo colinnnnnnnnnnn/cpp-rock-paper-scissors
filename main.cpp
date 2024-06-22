@@ -37,6 +37,25 @@ class LTexture
         int mHeight;
 };
 
+class LText
+{
+    public:
+        //Init variables
+        LText();
+        //Dealloc memory
+        ~LText();
+
+        //Create text
+        bool createText(std::string fontPath, SDL_Color color, int size, std::string text);
+
+        //Renders font at given point
+        void render(int x, int y);
+    
+    private:
+        //The hardware font texture
+        SDL_Texture* mFont;
+};
+
 //Starts SDL and creates window
 bool init();
 //Loads media
