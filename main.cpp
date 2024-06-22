@@ -233,6 +233,10 @@ int main(int argc, char* args[])
             bool quit = false;
             //Event handler
             SDL_Event e;
+
+            int turn = 0;
+            int firstChoice, secondChoice;
+            int winner;
             while (!quit)
             {
                 //Handle events on queue
@@ -242,6 +246,51 @@ int main(int argc, char* args[])
                     if (e.type == SDL_QUIT)
                     {
                         quit = true;
+                    }
+
+                    if (turn == 0)
+                    {
+                        switch (e.type)
+                        {
+                        case SDLK_1:
+                            firstChoice = 1;
+                            turn = 1;
+                            break;
+
+                        case SDLK_2:
+                            firstChoice = 2;
+                            turn = 1;
+                            break;
+
+                        case SDLK_3:
+                            firstChoice = 3;
+                            turn = 1;
+                            break;
+                        
+                        default:
+                            break;
+                        }
+                    }
+
+                    else
+                    {
+                        switch (e.type)
+                        {
+                        case SDLK_1:
+                            secondChoice = 1;
+                            break;
+
+                        case SDLK_2:
+                            secondChoice = 2;
+                            break;
+
+                        case SDLK_3:
+                            secondChoice = 3;
+                            break;
+                        
+                        default:
+                            break;
+                        }
                     }
                 }
 
