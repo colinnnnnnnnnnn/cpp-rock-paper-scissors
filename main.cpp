@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <stdio.h>
 #include <string>
 #define main SDL_main
@@ -48,13 +49,19 @@ class LText
         //Create text
         bool createText(std::string fontPath, SDL_Color color, int size, std::string text);
 
+        void free();
+
         //Renders font at given point
         void render(int x, int y);
     
     private:
         //The hardware font texture
-        SDL_Texture* mFont;
+        SDL_Texture* mText;
+        int mWidth;
+        int mHeight;
 };
+
+
 
 //Starts SDL and creates window
 bool init();
@@ -70,6 +77,88 @@ SDL_Renderer* gRenderer = NULL;
 
 //Textures
 LTexture gRockTexture;
+
+
+//
+//LText funcitons
+//
+
+
+LText::LText()
+{
+    //Init
+    mText = NULL;
+    mWidth = 0;
+    mHeight = 0;
+}
+
+LText::~LText()
+{
+    //Dealloc
+    free();
+}
+
+bool LText::createText(std::string fontPath, SDL_Color color, int size, std::string text)
+{
+    free();
+
+    SDL_Texture* finalTexture = NULL;
+    TTF_Font* gFont = TTF_OpenFont(fontPath.c_str(), size);
+
+    if (gFont == NULL)
+    {
+        printf("Font could not be opened from %s. SDL_ttf Error: %s\n", fontPath.c_str(), TTF_GetError());
+    }
+    else
+    {
+        SDL_Surface* fontSurface = TTF_RenderText_Solid(gFont, text.c_str(), { 0, 0, 0 });
+        if (fontSurface == NULL)
+        {
+            printf("Unable to create surface from font. SDL_ttf Error: %s\n", TTF_GetError());
+        }
+        else
+        {
+            finalTexture = SDL_CreateTextureFromSurface(gRenderer, fontSurface);
+            if (finalTexture == NULL)
+            {
+                printf("Unable to create texture from font surface. SDL Error: %s\n", SDL_GetError());
+            }
+            else
+            {
+                SDL_QueryTexture(finalTexture, NULL, NULL, &mWidth, &mHeight);
+            }
+
+            SDL_FreeSurface(fontSurface);
+        }
+    }
+
+    mText = finalTexture;
+    return mText != NULL; 
+}
+
+void LText::free()
+{
+    if (mText != NULL)
+    {
+        SDL_DestroyTexture(mText);
+        mText = NULL;
+        mWidth = 0;
+        mHeight = 0;
+    }
+}
+
+void LText::render(int x, int y)
+{
+    //Set rendering space and render to screen
+    SDL_Rect renderQuad = { x, y, mWidth, mHeight };
+    SDL_RenderCopy(gRenderer, mText, NULL, &renderQuad);
+}
+
+
+//
+// LTexture functions
+//
+
 
 LTexture::LTexture()
 {
