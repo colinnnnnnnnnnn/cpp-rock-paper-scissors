@@ -75,8 +75,11 @@ SDL_Window* gWindow = NULL;
 //The window renderer
 SDL_Renderer* gRenderer = NULL;
 
-//Textures
+//Image textures
 LTexture gRockTexture;
+
+//Text textures
+LText gWelcome;
 
 
 //
@@ -111,7 +114,7 @@ bool LText::createText(std::string fontPath, SDL_Color color, int size, std::str
     }
     else
     {
-        SDL_Surface* fontSurface = TTF_RenderText_Solid(gFont, text.c_str(), { 0, 0, 0 });
+        SDL_Surface* fontSurface = TTF_RenderText_Solid(gFont, text.c_str(), color);
         if (fontSurface == NULL)
         {
             printf("Unable to create surface from font. SDL_ttf Error: %s\n", TTF_GetError());
@@ -286,6 +289,13 @@ bool init()
                     printf("SDL_image could not initialize. SDL_image Error: %s\n", IMG_GetError());
                     success = false;
                 }
+
+                //Initialize SDL_ttf
+                if( TTF_Init() == -1 )
+                {
+                    printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
+                    success = false;
+                }
             }
         }
     }
@@ -302,6 +312,12 @@ bool loadMedia()
     if (!gRockTexture.loadFromFile("media/rock.png"))
     {
         printf("Failed to load rock texture image.\n");
+        success = false;
+    }
+
+    if (!gWelcome.createText("media/ComicSansMS.ttf", { 0, 0, 0 }, 20, "among us"))
+    {
+        printf("Failed to create welcome message texture.\n");
         success = false;
     }
 
@@ -356,50 +372,50 @@ int main(int argc, char* args[])
                         quit = true;
                     }
 
-                    if (turn == 0)
-                    {
-                        switch (e.type)
-                        {
-                        case SDLK_1:
-                            firstChoice = 1;
-                            turn = 1;
-                            break;
+                    // if (turn == 0)
+                    // {
+                    //     switch (e.type)
+                    //     {
+                    //     case SDLK_1:
+                    //         firstChoice = 1;
+                    //         turn = 1;
+                    //         break;
 
-                        case SDLK_2:
-                            firstChoice = 2;
-                            turn = 1;
-                            break;
+                    //     case SDLK_2:
+                    //         firstChoice = 2;
+                    //         turn = 1;
+                    //         break;
 
-                        case SDLK_3:
-                            firstChoice = 3;
-                            turn = 1;
-                            break;
+                    //     case SDLK_3:
+                    //         firstChoice = 3;
+                    //         turn = 1;
+                    //         break;
                         
-                        default:
-                            break;
-                        }
-                    }
+                    //     default:
+                    //         break;
+                    //     }
+                    // }
 
-                    else
-                    {
-                        switch (e.type)
-                        {
-                        case SDLK_1:
-                            secondChoice = 1;
-                            break;
+                    // else
+                    // {
+                    //     switch (e.type)
+                    //     {
+                    //     case SDLK_1:
+                    //         secondChoice = 1;
+                    //         break;
 
-                        case SDLK_2:
-                            secondChoice = 2;
-                            break;
+                    //     case SDLK_2:
+                    //         secondChoice = 2;
+                    //         break;
 
-                        case SDLK_3:
-                            secondChoice = 3;
-                            break;
+                    //     case SDLK_3:
+                    //         secondChoice = 3;
+                    //         break;
                         
-                        default:
-                            break;
-                        }
-                    }
+                    //     default:
+                    //         break;
+                    //     }
+                    // }
                 }
 
                 //Clear screen
@@ -412,6 +428,7 @@ int main(int argc, char* args[])
                 SDL_RenderFillRect(gRenderer, &bgRect);
 
                 gRockTexture.render(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+                gWelcome.render(20, 20);
 
                 //Update screen
                 SDL_RenderPresent(gRenderer);
