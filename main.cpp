@@ -53,6 +53,9 @@ class LText
 
         //Renders font at given point
         void render(int x, int y);
+
+        int getWidth();
+        int getHeight();
     
     private:
         //The hardware font texture
@@ -157,6 +160,15 @@ void LText::render(int x, int y)
     SDL_RenderCopy(gRenderer, mText, NULL, &renderQuad);
 }
 
+int LText::getWidth()
+{
+    return mWidth;
+}
+
+int LText::getHeight()
+{
+    return mHeight;
+}
 
 //
 // LTexture functions
@@ -327,6 +339,7 @@ bool loadMedia()
 void close()
 {
     gRockTexture.free();
+    gWelcome.free();
 
     SDL_DestroyRenderer(gRenderer);
     gRenderer = NULL;
