@@ -350,6 +350,72 @@ void close()
     SDL_Quit();
 }
 
+int checkWin(int p, int c)
+{
+    if (p == 1)
+    {
+        switch (c)
+        {
+        case 1:
+            return 3;
+            break;
+        
+        case 2:
+            return 2;
+            break;
+        
+        case 3:
+            return 1;
+            break;
+        
+        default:
+            break;
+        }
+    }
+
+    if (p == 2)
+    {
+        switch (c)
+        {
+        case 1:
+            return 1;
+            break;
+        
+        case 2:
+            return 3;
+            break;
+        
+        case 3:
+            return 2;
+            break;
+        
+        default:
+            break;
+        }
+    }
+
+    if (p == 3)
+    {
+        switch (c)
+        {
+        case 1:
+            return 2;
+            break;
+        
+        case 2:
+            return 1;
+            break;
+        
+        case 3:
+            return 3;
+            break;
+        
+        default:
+            break;
+        }
+    }
+}
+
 int main(int argc, char* args[])
 {
     //Start up SDL and create window
@@ -371,9 +437,9 @@ int main(int argc, char* args[])
             //Event handler
             SDL_Event e;
 
-            int turn = 0;
-            int firstChoice, secondChoice;
-            int winner;
+            int pChoice;
+            int cChoice;
+            int winner = 0;
             while (!quit)
             {
                 //Handle events on queue
@@ -385,50 +451,30 @@ int main(int argc, char* args[])
                         quit = true;
                     }
 
-                    // if (turn == 0)
-                    // {
-                    //     switch (e.type)
-                    //     {
-                    //     case SDLK_1:
-                    //         firstChoice = 1;
-                    //         turn = 1;
-                    //         break;
+                    if (winner == 0)
+                    {
+                        switch (e.type)
+                        {
+                        case SDLK_1:
+                            pChoice = 1;
+                            cChoice = rand() % 3 + 1;
+                            winner = checkWin(pChoice, cChoice);
+                            break;
 
-                    //     case SDLK_2:
-                    //         firstChoice = 2;
-                    //         turn = 1;
-                    //         break;
+                        case SDLK_2:
+                            pChoice = 2;
+                            cChoice = rand() % 3 + 1;
+                            break;
 
-                    //     case SDLK_3:
-                    //         firstChoice = 3;
-                    //         turn = 1;
-                    //         break;
+                        case SDLK_3:
+                            pChoice = 3;
+                            cChoice = rand() % 3 + 1;
+                            break;
                         
-                    //     default:
-                    //         break;
-                    //     }
-                    // }
-
-                    // else
-                    // {
-                    //     switch (e.type)
-                    //     {
-                    //     case SDLK_1:
-                    //         secondChoice = 1;
-                    //         break;
-
-                    //     case SDLK_2:
-                    //         secondChoice = 2;
-                    //         break;
-
-                    //     case SDLK_3:
-                    //         secondChoice = 3;
-                    //         break;
-                        
-                    //     default:
-                    //         break;
-                    //     }
-                    // }
+                        default:
+                            break;
+                        }
+                    }
                 }
 
                 //Clear screen
