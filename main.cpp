@@ -85,6 +85,10 @@ LTexture gScissorsTexture;
 
 //Text textures
 LText gWelcome;
+LText gWin;
+LText gLoss;
+LText gDraw;
+LText gRetry;
 
 
 //
@@ -305,7 +309,7 @@ bool init()
                 }
 
                 //Initialize SDL_ttf
-                if( TTF_Init() == -1 )
+                if(TTF_Init() == -1)
                 {
                     printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
                     success = false;
@@ -346,6 +350,30 @@ bool loadMedia()
     if (!gWelcome.createText("media/ComicSansMS.ttf", { 0, 0, 0 }, 20, "Use your keyboard: 1 - rock,  2 - paper, 3 - scissors."))
     {
         printf("Failed to create welcome message texture.\n");
+        success = false;
+    }
+
+    if (!gWin.createText("media/ComicSansMS.ttf", { 0, 0, 0 }, 30, "You win!"))
+    {
+        printf("Failed to create win message texture.\n");
+        success = false;
+    }
+
+    if (!gLoss.createText("media/ComicSansMS.ttf", { 0, 0, 0 }, 30, "You lose!"))
+    {
+        printf("Failed to create loss message texture.\n");
+        success = false;
+    }
+
+    if (!gDraw.createText("media/ComicSansMS.ttf", { 0, 0, 0 }, 30, "It's a draw!"))
+    {
+        printf("Failed to create loss message texture.\n");
+        success = false;
+    }
+
+    if (!gRetry.createText("media/ComicSansMS.ttf", { 0, 0, 0 }, 20, "Press Space to play again."))
+    {
+        printf("Failed to create loss message texture.\n");
         success = false;
     }
 
@@ -499,6 +527,19 @@ int main(int argc, char* args[])
                             }
                         }
                     }
+
+                    else
+                    {
+                        if (e.type = SDL_KEYDOWN)
+                        {
+                            if (e.key.keysym.sym == SDLK_SPACE)
+                            {
+                                winner = 0;
+                                pChoice = 0;
+                                cChoice = 0;
+                            }
+                        }
+                    }
                 }
 
                 //Clear screen
@@ -542,6 +583,27 @@ int main(int argc, char* args[])
 
                 case 3:
                     gScissorsTexture.render(400, 200);
+                    break;
+                
+                default:
+                    break;
+                }
+
+                switch (winner)
+                {
+                case 1:
+                    gWin.render((SCREEN_WIDTH - gWin.getWidth()) / 2, 100);
+                    gRetry.render((SCREEN_WIDTH - gRetry.getWidth()) / 2, 130);
+                    break;
+
+                case 2:
+                    gLoss.render((SCREEN_WIDTH - gLoss.getWidth()) / 2, 100);
+                    gRetry.render((SCREEN_WIDTH - gRetry.getWidth()) / 2, 130);
+                    break;
+                
+                case 3:
+                    gDraw.render((SCREEN_WIDTH - gDraw.getWidth()) / 2, 100);
+                    gRetry.render((SCREEN_WIDTH - gRetry.getWidth()) / 2, 130);
                     break;
                 
                 default:
