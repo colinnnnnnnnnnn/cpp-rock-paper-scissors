@@ -80,6 +80,8 @@ SDL_Renderer* gRenderer = NULL;
 
 //Image textures
 LTexture gRockTexture;
+LTexture gPaperTexture;
+LTexture gScissorsTexture;
 
 //Text textures
 LText gWelcome;
@@ -327,7 +329,21 @@ bool loadMedia()
         success = false;
     }
 
-    if (!gWelcome.createText("media/ComicSansMS.ttf", { 0, 0, 0 }, 20, "among us"))
+    //Load paper texture
+    if (!gPaperTexture.loadFromFile("media/paper.png"))
+    {
+        printf("Failed to load paper texture.\n");
+        success = false;
+    }
+
+    //Load scissors texture
+    if (!gScissorsTexture.loadFromFile("media/scissors.png"))
+    {
+        printf("Failed to load scissors texture.\n");
+        success = false;
+    }
+
+    if (!gWelcome.createText("media/ComicSansMS.ttf", { 0, 0, 0 }, 20, "Use your keyboard: 1 - rock,  2 - paper, 3 - scissors."))
     {
         printf("Failed to create welcome message texture.\n");
         success = false;
@@ -414,10 +430,16 @@ int checkWin(int p, int c)
             break;
         }
     }
+
+    return 0;
 }
 
 int main(int argc, char* args[])
 {
+    int pChoice;
+    int cChoice;
+    int winner = 0;
+
     //Start up SDL and create window
     if (!init())
     {
@@ -437,9 +459,6 @@ int main(int argc, char* args[])
             //Event handler
             SDL_Event e;
 
-            int pChoice;
-            int cChoice;
-            int winner = 0;
             while (!quit)
             {
                 //Handle events on queue
@@ -453,26 +472,31 @@ int main(int argc, char* args[])
 
                     if (winner == 0)
                     {
-                        switch (e.type)
+                        if (e.type == SDL_KEYDOWN)
                         {
-                        case SDLK_1:
-                            pChoice = 1;
-                            cChoice = rand() % 3 + 1;
-                            winner = checkWin(pChoice, cChoice);
-                            break;
+                            switch (e.key.keysym.sym)
+                            {
+                            case SDLK_1:
+                                pChoice = 1;
+                                cChoice = rand() % 3 + 1;
+                                winner = checkWin(pChoice, cChoice);
+                                break;
 
-                        case SDLK_2:
-                            pChoice = 2;
-                            cChoice = rand() % 3 + 1;
-                            break;
+                            case SDLK_2:
+                                pChoice = 2;
+                                cChoice = rand() % 3 + 1;
+                                winner = checkWin(pChoice, cChoice);
+                                break;
 
-                        case SDLK_3:
-                            pChoice = 3;
-                            cChoice = rand() % 3 + 1;
-                            break;
-                        
-                        default:
-                            break;
+                            case SDLK_3:
+                                pChoice = 3;
+                                cChoice = rand() % 3 + 1;
+                                winner = checkWin(pChoice, cChoice);
+                                break;
+                            
+                            default:
+                                break;
+                            }
                         }
                     }
                 }
@@ -486,8 +510,43 @@ int main(int argc, char* args[])
                 SDL_SetRenderDrawColor(gRenderer, 172, 202, 250, 0xFF);
                 SDL_RenderFillRect(gRenderer, &bgRect);
 
-                gRockTexture.render(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
                 gWelcome.render(20, 20);
+
+                switch (pChoice)
+                {
+                case 1:
+                    gRockTexture.render(80, 200);
+                    break;
+                
+                case 2:
+                    gPaperTexture.render(80, 200);
+                    break;
+
+                case 3:
+                    gScissorsTexture.render(80, 200);
+                    break;
+                
+                default:
+                    break;
+                }
+
+                switch (cChoice)
+                {
+                case 1:
+                    gRockTexture.render(400, 200);
+                    break;
+                
+                case 2:
+                    gPaperTexture.render(400, 200);
+                    break;
+
+                case 3:
+                    gScissorsTexture.render(400, 200);
+                    break;
+                
+                default:
+                    break;
+                }
 
                 //Update screen
                 SDL_RenderPresent(gRenderer);
